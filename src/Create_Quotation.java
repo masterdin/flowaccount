@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.concurrent.TimeUnit;
-import static org.junit.Assert.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class Create_Quotation {
@@ -17,11 +17,11 @@ public class Create_Quotation {
 
     //    System.setProperty("webdriver.gecko.driver", "C:\\geckodriver\\geckodriver.exe");
 
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(10, SECONDS);
 
 
         WebElement expand_sale_nav = driver.findElement(By.cssSelector("#sales-nav"));
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(10, SECONDS);
         expand_sale_nav.click();
 
 
@@ -29,7 +29,7 @@ public class Create_Quotation {
         Quotation_click.click();
 
 
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(10, SECONDS);
         WebElement New_Quo = driver.findElement(By.cssSelector("#gridsection div a"));
         New_Quo.click();
 
@@ -59,7 +59,9 @@ public class Create_Quotation {
 
 
         WebElement Get_Quo_id = driver.findElement(By.cssSelector("#createUpdateModal .pull-right div"));
-        System.out.println(Get_Quo_id.getText());
+        String quo_id = Get_Quo_id.getText();
+        //System.out.println(quo_id);
+
 
 
         WebElement Print = driver.findElement(By.xpath(".//*[@id='printbtn']"));
@@ -70,37 +72,46 @@ public class Create_Quotation {
 
         if (Check_Print.isDisplayed()) {
 
-            System.out.println("Pass");
+            System.out.println("Print page are displayed");
         } else {
-            System.out.println("Fail");
+            System.out.println("Print page are not displayed");
         }
 
         //Close Print Page
 
         WebElement Close_print = driver.findElement(By.cssSelector(".modal-content div a"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".modal-content div a")));
         Close_print.click();
+
+        driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
+
+        WebElement Save = driver.findElement(By.cssSelector("#modal-viewport-control div #submitbtn"));
+        //wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#modal-viewport-control div #submitbtn")));
+        Save.click();
+
+        driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
 
         //Close Create Quotation Page
         WebElement Close = driver.findElement(By.cssSelector(".close-invoice-create"));
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".close-invoice-create")));
         Close.click();
 
+        driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
+
         WebElement Get_Quo_id_in_grid = driver.findElement(By.cssSelector("#ui-id-1 .table .bbGrid-row td:nth-child(3)"));
-        System.out.println(Get_Quo_id_in_grid.getText());
+        String quo_grid = Get_Quo_id_in_grid.getText().trim();
+        //System.out.println(quo_grid);
 
 
+        //Check Quotation number in create page and top Quotation number in grid when create already
+        if(quo_id.equals(quo_grid))
+        {
+            System.out.println("Create Quotation Pass");
+        }
+        else{
+            System.out.println("Create Quotation Fail");
+        }
 
-//        if(Get_Quo_id.getText().equalsIgnoreCase(Get_Quo_id_in_grid.getText())){
-//            System.out.println("Pass");
-//        }
-//        else {
-//            System.out.println("Fail");
-//        }
-
-
-//        driver.findElement(By.cssSelector(".button-box")).click();
-
-
-        //driver.quit();
+        driver.quit();
     }
 }
